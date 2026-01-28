@@ -1,26 +1,480 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Permanent Marker Font for Logo */
+@font-face {
+  font-family: 'Permanent Marker';
+  src: url('/fonts/logo-font/TitanOne-Regular.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Kantumruy Pro Font Faces */
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-ThinItalic.ttf') format('truetype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-ExtraLightItalic.ttf') format('truetype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kantumruy Pro';
+  src: url('/fonts/KantumruyPro-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
 }
 
 @theme inline {
+  --font-sans: 'Kantumruy Pro', system-ui, sans-serif;
+  --font-logo: 'Permanent Marker', cursive;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+
+  /* Custom Colors */
+  --color-logo-red: #C91F23;
+  --color-logo-green: #22c55e;
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-header: var(--header-bg);
+  --color-header-foreground: var(--header-foreground);
+  --color-nav: var(--nav-bg);
+  --color-nav-foreground: var(--nav-foreground);
+
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-up: fade-up 0.5s ease-out forwards;
+  --animate-fade-in: fade-in 0.3s ease-out forwards;
+  --animate-slide-in-right: slide-in-right 0.4s ease-out forwards;
+  --animate-bounce-soft: bounce-soft 2s ease-in-out infinite;
+
+  /* Shadows */
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: hsl(0 0% 98%);
+  --foreground: hsl(222 47% 11%);
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+
+  --primary: hsl(358 75% 45%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  --secondary: hsl(210 40% 96%);
+  --secondary-foreground: hsl(222 47% 11%);
+
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(215 16% 47%);
+
+  --accent: hsl(24 95% 53%);
+  --accent-foreground: hsl(0 0% 100%);
+
+  --success: hsl(142 76% 36%);
+  --success-foreground: hsl(0 0% 100%);
+
+  --warning: hsl(45 93% 47%);
+  --warning-foreground: hsl(0 0% 0%);
+
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  --border: hsl(214 32% 91%);
+  --input: hsl(214 32% 91%);
+  --ring: hsl(358 75% 45%);
+
+  --radius: 0.75rem;
+
+  /* Custom marketplace tokens */
+  --header-bg: hsl(222 47% 11%);
+  --header-foreground: hsl(0 0% 100%);
+  --nav-bg: hsl(358 75% 45%);
+  --nav-foreground: hsl(0 0% 100%);
+  --badge-sale: hsl(0 84% 60%);
+  --badge-new: hsl(142 76% 36%);
+  --rating-star: hsl(45 93% 47%);
+  --price-discount: hsl(0 84% 60%);
+  --price-original: hsl(215 16% 47%);
+
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, hsl(358 75% 45%) 0%, hsl(358 75% 55%) 100%);
+  --gradient-accent: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(15 95% 50%) 100%);
+  --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-card: 0 2px 8px -2px rgb(0 0 0 / 0.08), 0 4px 16px -4px rgb(0 0 0 / 0.12);
+  --shadow-card-hover: 0 8px 24px -4px rgb(0 0 0 / 0.15), 0 16px 32px -8px rgb(0 0 0 / 0.1);
+
+  --sidebar-background: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --background: hsl(222 47% 6%);
+  --foreground: hsl(210 40% 98%);
+
+  --card: hsl(222 47% 8%);
+  --card-foreground: hsl(210 40% 98%);
+
+  --popover: hsl(222 47% 8%);
+  --popover-foreground: hsl(210 40% 98%);
+
+  --primary: hsl(358 75% 45%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  --secondary: hsl(217 33% 17%);
+  --secondary-foreground: hsl(210 40% 98%);
+
+  --muted: hsl(217 33% 17%);
+  --muted-foreground: hsl(215 20% 65%);
+
+  --accent: hsl(24 95% 53%);
+  --accent-foreground: hsl(0 0% 100%);
+
+  --destructive: hsl(0 63% 31%);
+  --destructive-foreground: hsl(210 40% 98%);
+
+  --border: hsl(217 33% 17%);
+  --input: hsl(217 33% 17%);
+  --ring: hsl(212 27% 84%);
+
+  --header-bg: hsl(222 47% 8%);
+  --header-foreground: hsl(0 0% 100%);
+  --nav-bg: hsl(358 75% 40%);
+  --nav-foreground: hsl(0 0% 100%);
+
+  --sidebar-background: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-card-hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 1400px;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted-foreground), transparent 70%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--muted-foreground), transparent 50%);
+}
+
+/* Animation keyframes */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+
+  to {
+    height: 0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce-soft {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-soft {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
 }
