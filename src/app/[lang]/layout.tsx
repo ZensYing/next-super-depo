@@ -17,6 +17,8 @@ export const metadata: Metadata = {
     description: "Valley Joy Web App",
 };
 
+import { AuthProvider } from "@/contexts/AuthContext";
+
 export default async function LanguageLayout({
     children,
     params,
@@ -28,11 +30,13 @@ export default async function LanguageLayout({
     return (
         <QueryProvider>
             <LanguageProvider initialLang={resolvedParams.lang as any}>
-                <TooltipProvider>
-                    {children}
-                    <Toaster />
-                    <Sonner />
-                </TooltipProvider>
+                <AuthProvider>
+                    <TooltipProvider>
+                        {children}
+                        <Toaster />
+                        <Sonner />
+                    </TooltipProvider>
+                </AuthProvider>
             </LanguageProvider>
         </QueryProvider>
     );

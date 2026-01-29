@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Heart, ShoppingCart, User, Menu, Phone, ChevronDown } from "lucide-react";
+import { Search, Heart, ShoppingCart, User, Menu, Phone, ChevronDown, LogOut, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,12 +16,14 @@ import { LocalizedLink } from "@/components/LocalizedLink";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { languages, LanguageCode } from "@/lib/constants";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
   const [cartCount] = useState(0);
   const [wishlistCount] = useState(0);
   const { currentLanguage, setLanguage } = useLanguage();
   const { t } = useTranslation();
+  const { user, logout } = useAuth(); // Get user and logout from context
 
   const handleLanguageChange = (code: LanguageCode) => {
     setLanguage(code);
@@ -140,11 +142,44 @@ export const Header = () => {
                 </span>
               )}
             </Button>
-            <LocalizedLink to="/login">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </LocalizedLink>
+
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <LocalizedLink
+                      to={
+                        user?.role === 'superadmin'
+                          ? '/super-admin-depo'
+                          : user?.role === 'vendor_admin'
+                            ? '/super-depo'
+                            : '/customer-dashboard'
+                      }
+                      className="cursor-pointer w-full flex items-center"
+                    >
+                      <UserIcon className="mr-2 h-4 w-4" />
+                      <span>{user?.role === 'superadmin' ? 'Admin Dashboard' : user?.role === 'vendor_admin' ? 'Vendor Portal' : 'Profile'}</span>
+                    </LocalizedLink>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <LocalizedLink to="/login">
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </LocalizedLink>
+            )}
+
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />

@@ -1,5 +1,6 @@
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { LocalizedLink } from "@/components/LocalizedLink";
 import { Button } from "@/components/ui/button";
@@ -8,11 +9,65 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Mail, Phone, Lock, Eye, EyeOff, User } from "lucide-react";
+import { Mail, Phone, Lock, Eye, EyeOff, User, Store } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Register = () => {
     const { t } = useTranslation();
+    const router = useRouter();
+    const { getLocalizedPath } = useLanguage();
+    const { login, isAuthenticated, isInitialized } = useAuth();
+
+    const [fullName, setFullName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push(getLocalizedPath("/"));
+        }
+    }, [isAuthenticated, router, getLocalizedPath]);
+
+    if (!isInitialized || isAuthenticated) return <div className="min-h-screen bg-background" />;
+
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            const response = await api.post('/auth/register', { email, password, fullName });
+            const token = response.data.access_token;
+
+            // Basic decoding
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            const decoded = JSON.parse(jsonPayload);
+            const user = { id: decoded.sub, email: decoded.email, role: decoded.role, fullName: decoded.fullName };
+
+            login(token, user);
+
+            toast("Account Created", {
+                description: "Registration successful. Welcome!",
+            });
+            router.push(getLocalizedPath('/'));
+        } catch (error: any) {
+            console.error(error);
+            toast("Error", {
+                description: error.response?.data?.message || "Registration failed",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
@@ -29,9 +84,15 @@ const Register = () => {
                                 {t("signIn")}
                             </LocalizedLink>
                         </p>
+                        <div className="mt-4 pt-4 border-t border-slate-100">
+                            <LocalizedLink to="/vendor-register" className="text-sm font-medium text-slate-600 hover:text-primary transition-colors flex items-center justify-center gap-2">
+                                <Store className="h-4 w-4" />
+                                Become a SuperDepo Vendor
+                            </LocalizedLink>
+                        </div>
                     </div>
 
-                    <Tabs defaultValue="phone" className="w-full">
+                    <Tabs defaultValue="email" className="w-full">
                         <TabsList className="grid w-full grid-cols-2 mb-6">
                             <TabsTrigger value="phone">{t("phoneNumber")}</TabsTrigger>
                             <TabsTrigger value="email">{t("email")}</TabsTrigger>
@@ -84,19 +145,25 @@ const Register = () => {
                                     </div>
                                 </div>
 
-                                <Button className="w-full" type="submit">
-                                    {t("signUp")}
+                                <Button className="w-full" type="submit" disabled>
+                                    {t("signUp")} (Phone Not Implemented)
                                 </Button>
                             </form>
                         </TabsContent>
 
                         <TabsContent value="email">
-                            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                            <form className="space-y-4" onSubmit={handleRegister}>
                                 <div className="space-y-2">
                                     <Label htmlFor="name-email">Full Name</Label>
                                     <div className="relative">
                                         <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                        <Input id="name-email" placeholder="John Doe" className="pl-9" />
+                                        <Input
+                                            id="name-email"
+                                            placeholder="John Doe"
+                                            className="pl-9"
+                                            value={fullName}
+                                            onChange={(e) => setFullName(e.target.value)}
+                                        />
                                     </div>
                                 </div>
 
@@ -109,6 +176,9 @@ const Register = () => {
                                             placeholder="name@example.com"
                                             type="email"
                                             className="pl-9"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -122,6 +192,9 @@ const Register = () => {
                                             type={showPassword ? "text" : "password"}
                                             className="pl-9 pr-9"
                                             placeholder="••••••••"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
                                         />
                                         <button
                                             type="button"
@@ -137,8 +210,8 @@ const Register = () => {
                                     </div>
                                 </div>
 
-                                <Button className="w-full" type="submit">
-                                    {t("signUp")}
+                                <Button className="w-full" type="submit" disabled={isLoading}>
+                                    {isLoading ? "Loading..." : t("signUp")}
                                 </Button>
                             </form>
                         </TabsContent>

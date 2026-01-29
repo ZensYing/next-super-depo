@@ -1,5 +1,6 @@
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { LocalizedLink } from "@/components/LocalizedLink";
 import { Button } from "@/components/ui/button";
@@ -8,11 +9,62 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Phone, Lock, Eye, EyeOff, User, Store } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Login = () => {
     const { t } = useTranslation();
+    const router = useRouter();
+    const { getLocalizedPath } = useLanguage();
+    const { login, isAuthenticated, isInitialized } = useAuth();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push(getLocalizedPath("/"));
+        }
+    }, [isAuthenticated, router, getLocalizedPath]);
+
+    if (!isInitialized || isAuthenticated) return <div className="min-h-screen bg-background" />;
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            const response = await api.post('/auth/login', { email, password });
+            const token = response.data.access_token;
+
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            const decoded = JSON.parse(jsonPayload);
+            const user = { id: decoded.sub, email: decoded.email, role: decoded.role, fullName: decoded.fullName };
+
+            login(token, user);
+            toast("Success", {
+                description: t("signIn") + " Success",
+            });
+            router.push(getLocalizedPath('/'));
+        } catch (error: any) {
+            console.error(error);
+            toast("Error", {
+                description: error.response?.data?.message || "Login failed",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
@@ -29,9 +81,15 @@ const Login = () => {
                                 {t("signUp")}
                             </LocalizedLink>
                         </p>
+                        <div className="mt-4 pt-4 border-t border-slate-100">
+                            <LocalizedLink to="/vendor-register" className="text-sm font-medium text-slate-600 hover:text-primary transition-colors flex items-center justify-center gap-2">
+                                <Store className="h-4 w-4" />
+                                Become a SuperDepo Vendor
+                            </LocalizedLink>
+                        </div>
                     </div>
 
-                    <Tabs defaultValue="phone" className="w-full">
+                    <Tabs defaultValue="email" className="w-full">
                         <TabsList className="grid w-full grid-cols-2 mb-6">
                             <TabsTrigger value="phone">{t("phoneNumber")}</TabsTrigger>
                             <TabsTrigger value="email">{t("email")}</TabsTrigger>
@@ -81,14 +139,14 @@ const Login = () => {
                                     </div>
                                 </div>
 
-                                <Button className="w-full" type="submit">
-                                    {t("signIn")}
+                                <Button className="w-full" type="submit" disabled>
+                                    {t("signIn")} (Phone Not Implemented)
                                 </Button>
                             </form>
                         </TabsContent>
 
                         <TabsContent value="email">
-                            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                            <form className="space-y-6" onSubmit={handleLogin}>
                                 <div className="space-y-2">
                                     <Label htmlFor="email">{t("email")}</Label>
                                     <div className="relative">
@@ -98,6 +156,9 @@ const Login = () => {
                                             placeholder="name@example.com"
                                             type="email"
                                             className="pl-9"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -116,6 +177,9 @@ const Login = () => {
                                             type={showPassword ? "text" : "password"}
                                             className="pl-9 pr-9"
                                             placeholder="••••••••"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
                                         />
                                         <button
                                             type="button"
@@ -131,8 +195,8 @@ const Login = () => {
                                     </div>
                                 </div>
 
-                                <Button className="w-full" type="submit">
-                                    {t("signIn")}
+                                <Button className="w-full" type="submit" disabled={isLoading}>
+                                    {isLoading ? "Loading..." : t("signIn")}
                                 </Button>
                             </form>
                         </TabsContent>
