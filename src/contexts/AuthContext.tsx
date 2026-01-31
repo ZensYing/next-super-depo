@@ -1,25 +1,16 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-// Simple cookie helper
-const setCookie = (name: string, value: string, days: number) => {
-    const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
-};
-
-const deleteCookie = (name: string) => {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-};
+import { useSession, signOut as nextAuthSignOut, signIn as nextAuthSignIn } from "next-auth/react";
 
 interface User {
-    id: number;
+    id: string;
     email: string;
     role: string;
     fullName?: string;
+    vendorId?: string | null;
 }
 
 interface AuthContextType {
@@ -33,49 +24,53 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const { data: session, status } = useSession();
     const [user, setUser] = useState<User | null>(null);
-    const [isInitialized, setIsInitialized] = useState(false);
-    const router = useRouter();
     const { getLocalizedPath } = useLanguage();
+    const router = useRouter();
 
     useEffect(() => {
-        // Check for token on initial load
-        const token = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
-        if (token && storedUser) {
-            try {
-                // Assuming storedUser is the JSON string of the User object
-                // If the intent is to decode the token, the logic would be different.
-                // For now, we'll parse storedUser as a User object.
-                const parsedUser: User = JSON.parse(storedUser);
-                setUser(parsedUser);
-            } catch (e) {
-                console.error("Failed to parse user data", e);
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-            }
+        if (status === 'authenticated' && session?.user) {
+            setUser({
+                id: session.user.id || '',
+                email: session.user.email || '',
+                // @ts-ignore
+                role: session.user.role || 'customer',
+                fullName: session.user.name || '',
+                // @ts-ignore
+                vendorId: session.user.vendorId || null
+            });
+        } else if (status === 'unauthenticated') {
+            setUser(null);
         }
-        setIsInitialized(true);
-    }, []);
+    }, [session, status]);
 
-    const login = (token: string, userData: User) => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        setCookie('token', token, 7); // Set token in cookie for middleware
+    // Legacy login support (will be replaced by direct signIn calls in components)
+    // But keeping signature compatible for now to avoid breaking changes elsewhere
+    const login = async (token: string, userData: User) => {
+        // In NextAuth world, login is handled by signIn(), which refreshes session
+        // This function is kept for compatibility but might trigger a full reload or re-auth
+        // Ideally, components should call signIn() directly.
+
+        // Since we are already moving towards NextAuth, we'll just set the user state locally
+        // if this is called manually, but the source of truth is the session.
         setUser(userData);
-        // You might want to navigate here, but it's often better to let the component handle navigation
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        deleteCookie('token'); // Remove token from cookie
+    const logout = async () => {
+        await nextAuthSignOut({ redirect: false });
         setUser(null);
         router.push(getLocalizedPath('/login'));
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, isInitialized }}>
+        <AuthContext.Provider value={{
+            user,
+            login,
+            logout,
+            isAuthenticated: status === 'authenticated',
+            isInitialized: status !== 'loading'
+        }}>
             {children}
         </AuthContext.Provider>
     );

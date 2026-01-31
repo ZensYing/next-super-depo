@@ -40,7 +40,7 @@ export const Footer = () => {
               <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
                 <ShoppingCart className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold font-logo"><span className="text-logo-red">Super</span><span className="text-logo-green">Depo</span></span>
+              <span className="text-xl font-bold font-logo"><span className="text-logo-red">Kh</span><span className="text-logo-green">Global</span></span>
             </LocalizedLink>
             <p className="text-header-foreground/70 text-sm mb-4">
               {t("footerDescription")}
@@ -110,7 +110,7 @@ export const Footer = () => {
       <div className="border-t border-header-foreground/10">
         <div className="container py-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-header-foreground/70 text-sm">
-            © 2025 <span className="font-logo"><span className="text-logo-red">Super</span><span className="text-logo-green">Depo</span></span>. {t("allRightsReserved")}.
+            © 2025 <span className="font-logo"><span className="text-logo-red">Kh</span><span className="text-logo-green">Global</span></span>. {t("allRightsReserved")}.
           </p>
           <div className="flex items-center gap-3">
             <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-6 opacity-70 hover:opacity-100 transition-opacity" />

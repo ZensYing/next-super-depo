@@ -1,4 +1,4 @@
-export type LanguageCode = "km" | "en" | "zh";
+export type LanguageCode = "km" | "en" | "ko";
 
 export interface Language {
     code: LanguageCode;
@@ -10,7 +10,8 @@ export interface Language {
 export const languages: Language[] = [
     { code: "km", name: "Khmer", nativeName: "ភាសាខ្មែរ", flag: "🇰🇭" },
     { code: "en", name: "English", nativeName: "English", flag: "🇺🇸" },
-    { code: "zh", name: "Chinese", nativeName: "中文", flag: "🇨🇳" },
+    { code: "ko", name: "Korean", nativeName: "한국어", flag: "🇰🇷" },
 ];
 
 export const DEFAULT_LANGUAGE: LanguageCode = "km";
+

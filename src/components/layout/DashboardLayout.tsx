@@ -16,6 +16,7 @@ import {
     User
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SidebarItem {
     icon: any;
@@ -38,6 +39,14 @@ export const DashboardLayout = ({
 }: DashboardLayoutProps) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const pathname = usePathname();
+    const { getLocalizedPath } = useLanguage();
+
+    const isLinkActive = (href: string) => {
+        const localizedHref = getLocalizedPath(href);
+        // Check for exact match or if it's a sub-path (optional, but good for UX)
+        // For now, let's stick to exact match to avoid collisions or simple startsWith
+        return pathname === localizedHref || pathname === href;
+    }
 
     return (
         <div className="min-h-screen bg-muted/20 flex">
@@ -61,23 +70,26 @@ export const DashboardLayout = ({
 
                     {/* Sidebar Nav */}
                     <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-                        {sidebarItems.map((item) => (
-                            <Link
-                                key={item.href}
-                                to={item.href}
-                            >
-                                <Button
-                                    variant={pathname === item.href ? "secondary" : "ghost"}
-                                    className={cn(
-                                        "w-full justify-start gap-3",
-                                        pathname === item.href && "bg-primary/10 text-primary hover:bg-primary/15"
-                                    )}
+                        {sidebarItems.map((item) => {
+                            const active = isLinkActive(item.href);
+                            return (
+                                <Link
+                                    key={item.href}
+                                    to={item.href}
                                 >
-                                    <item.icon className="h-5 w-5" />
-                                    {item.label}
-                                </Button>
-                            </Link>
-                        ))}
+                                    <Button
+                                        variant={active ? "secondary" : "ghost"}
+                                        className={cn(
+                                            "w-full justify-start gap-3",
+                                            active && "bg-primary/10 text-primary hover:bg-primary/15"
+                                        )}
+                                    >
+                                        <item.icon className="h-5 w-5" />
+                                        {item.label}
+                                    </Button>
+                                </Link>
+                            )
+                        })}
                     </div>
 
                     {/* Sidebar Footer */}
@@ -104,7 +116,7 @@ export const DashboardLayout = ({
                             {isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                         </Button>
                         <h1 className="text-xl font-semibold hidden md:block">
-                            {sidebarItems.find(i => i.href === pathname)?.label || "Dashboard"}
+                            {sidebarItems.find(i => isLinkActive(i.href))?.label || "Dashboard"}
                         </h1>
                     </div>
 
@@ -151,3 +163,4 @@ export const DashboardLayout = ({
         </div>
     );
 };
+

@@ -71,7 +71,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, in
 
   const getLocalizedPath = (path: string): string => {
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    const cleanPathNoLang = cleanPath.replace(/^\/(km|en|zh)/, "");
+    const cleanPathNoLang = cleanPath.replace(/^\/(km|en|zh|ko)/, "");
 
     if (cleanPathNoLang === '/' || cleanPathNoLang === '') {
       return `/${currentLanguage.code}`;

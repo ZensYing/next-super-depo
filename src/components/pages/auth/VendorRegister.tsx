@@ -171,7 +171,7 @@ export const VendorRegister = () => {
                         priority
                     />
                     <div className="relative z-20 text-white max-w-lg">
-                        <h1 className="text-5xl font-bold mb-6">Grow Your Business with SuperDepo</h1>
+                        <h1 className="text-5xl font-bold mb-6">Grow Your Business with KhGlobal</h1>
                         <p className="text-xl text-slate-300 leading-relaxed mb-8">
                             Join Cambodia's leading marketplace for construction and home materials. Reach thousands of customers instantly.
                         </p>
@@ -389,7 +389,7 @@ export const VendorRegister = () => {
                                     <div className="flex items-start space-x-2 pt-4">
                                         <input type="checkbox" id="terms" className="mt-1" required />
                                         <Label htmlFor="terms" className="text-xs text-slate-500 leading-tight">
-                                            I agree to the SuperDepo Vendor Agreement and confirm that all provided information is accurate.
+                                            I agree to the KhGlobal Vendor Agreement and confirm that all provided information is accurate.
                                         </Label>
                                     </div>
                                 </div>
