@@ -1,3 +1,5 @@
+"use client";
+
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { HeroBanner } from "@/components/home/HeroBanner";
@@ -10,7 +12,19 @@ import { TopSellers } from "@/components/home/TopSellers";
 import { PromoBanner } from "@/components/home/PromoBanner";
 import { LatestProducts } from "@/components/home/LatestProducts";
 
-const Index = () => {
+interface IndexProps {
+  data: {
+    featuredProducts: any[];
+    latestProducts: any[];
+    dealOfTheDay: any;
+    categories: any[];
+    flashDeals: any[];
+    topSellers: any[];
+    banners: any[];
+  };
+}
+
+const Index = ({ data }: IndexProps) => {
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Header />
@@ -19,34 +33,33 @@ const Index = () => {
           {/* Hero Section with Sidebar */}
           <div className="flex gap-6 mb-6">
             <div className="hidden lg:block w-64 shrink-0">
-              <SidebarCategories />
+              <SidebarCategories categories={data.categories} />
             </div>
             <div className="flex-1">
-              <HeroBanner />
+              <HeroBanner banners={data.banners} />
             </div>
           </div>
-
+          {/* Latest Products with Deal of the Day */}
+          <LatestProducts products={data.latestProducts} dealOfTheDay={data.dealOfTheDay} />
           {/* Flash Deal */}
-          <FlashDeal />
+          <FlashDeal products={data.flashDeals} />
+
           {/* Promo Banner */}
-          <PromoBanner />
+          {/* <PromoBanner /> */}
 
           {/* Featured Products */}
-          <FeaturedProducts />
+          {/* <FeaturedProducts products={data.featuredProducts} /> */}
 
           {/* Categories */}
-          <CategoryGrid />
+          <CategoryGrid categories={data.categories} />
 
           {/* Featured Deal */}
-          <FeaturedDeal />
-
-
+          <FeaturedDeal deal={data.dealOfTheDay} />
 
           {/* Top Sellers */}
-          <TopSellers />
+          <TopSellers vendors={data.topSellers} />
 
-          {/* Latest Products with Deal of the Day */}
-          <LatestProducts />
+
         </div>
       </main>
       <Footer />

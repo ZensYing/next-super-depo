@@ -1,3 +1,4 @@
+"use client";
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import {
@@ -8,15 +9,18 @@ import {
     Settings,
     BarChart3,
     DollarSign,
-    Package
+    Package,
+    FolderTree
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default function SuperAdminDashboard() {
     const sidebarItems = [
-        { icon: LayoutDashboard, label: "Overview", href: "/super-admin-depo" },
+        { icon: LayoutDashboard, label: "Overview", href: "/super-admin-depo", active: true },
         { icon: Users, label: "User Management", href: "/super-admin-depo/users" },
         { icon: Store, label: "Depos (Vendors)", href: "/super-admin-depo/depos" },
+        { icon: FolderTree, label: "Categories", href: "/super-admin-depo/categories" },
         { icon: ShoppingBag, label: "Products", href: "/super-admin-depo/products" },
         { icon: DollarSign, label: "Transactions", href: "/super-admin-depo/transactions" },
         { icon: BarChart3, label: "Reports", href: "/super-admin-depo/reports" },
@@ -24,11 +28,7 @@ export default function SuperAdminDashboard() {
     ];
 
     return (
-        <DashboardLayout
-            title="Super Admin"
-            userRole="Administrator"
-            sidebarItems={sidebarItems}
-        >
+        <ProtectedRoute allowedRoles={['superadmin']}>
             <div className="space-y-6">
                 {/* Stats Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -111,6 +111,6 @@ export default function SuperAdminDashboard() {
                     </Card>
                 </div>
             </div>
-        </DashboardLayout>
+        </ProtectedRoute>
     );
 }

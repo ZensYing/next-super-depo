@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Heart, ShoppingCart, User, Menu, Phone, ChevronDown } from "lucide-react";
+import { Search, Heart, ShoppingCart, User, Menu, Phone, ChevronDown, LogOut, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,12 +16,14 @@ import { LocalizedLink } from "@/components/LocalizedLink";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { languages, LanguageCode } from "@/lib/constants";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
   const [cartCount] = useState(0);
   const [wishlistCount] = useState(0);
   const { currentLanguage, setLanguage } = useLanguage();
   const { t } = useTranslation();
+  const { user, logout } = useAuth(); // Get user and logout from context
 
   const handleLanguageChange = (code: LanguageCode) => {
     setLanguage(code);
@@ -38,7 +40,7 @@ export const Header = () => {
           </div>
           <div className="flex items-center gap-4">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm">
+              <DropdownMenuTrigger suppressHydrationWarning className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm">
                 {t("currency")} <ChevronDown className="h-3 w-3" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -48,7 +50,7 @@ export const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm">
+              <DropdownMenuTrigger suppressHydrationWarning className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm">
                 {currentLanguage.flag} {currentLanguage.nativeName} <ChevronDown className="h-3 w-3" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -64,7 +66,7 @@ export const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
+              <DropdownMenuTrigger suppressHydrationWarning className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
                 {t("vendorZone")} <ChevronDown className="h-3 w-3" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -83,7 +85,7 @@ export const Header = () => {
           {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" suppressHydrationWarning>
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
@@ -93,7 +95,7 @@ export const Header = () => {
                   <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
                     <ShoppingCart className="h-5 w-5 text-primary-foreground" />
                   </div>
-                  <span className="text-xl font-bold font-logo"><span className="text-logo-red">Super</span><span className="text-logo-green">Depo</span></span>
+                  <span className="text-xl font-bold font-logo"><span className="text-logo-red">Kh</span><span className="text-logo-green">Global</span></span>
                 </LocalizedLink>
               </div>
               <nav className="p-4 space-y-2">
@@ -110,7 +112,7 @@ export const Header = () => {
             <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
               <ShoppingCart className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold font-logo hidden sm:block"><span className="text-logo-red">Super</span><span className="text-logo-green">Depo</span></span>
+            <span className="text-xl font-bold font-logo hidden sm:block"><span className="text-logo-red">Kh</span><span className="text-logo-green">Global</span></span>
           </LocalizedLink>
 
           {/* Search */}
@@ -140,11 +142,44 @@ export const Header = () => {
                 </span>
               )}
             </Button>
-            <LocalizedLink to="/login">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </LocalizedLink>
+
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" suppressHydrationWarning>
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <LocalizedLink
+                      to={
+                        user?.role === 'superadmin'
+                          ? '/super-admin-depo'
+                          : user?.role === 'vendor_admin'
+                            ? '/super-depo'
+                            : '/customer-dashboard'
+                      }
+                      className="cursor-pointer w-full flex items-center"
+                    >
+                      <UserIcon className="mr-2 h-4 w-4" />
+                      <span>{user?.role === 'superadmin' ? 'Admin Dashboard' : user?.role === 'vendor_admin' ? 'Vendor Portal' : 'Profile'}</span>
+                    </LocalizedLink>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <LocalizedLink to="/login">
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </LocalizedLink>
+            )}
+
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
@@ -175,7 +210,7 @@ export const Header = () => {
           </LocalizedLink>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10 h-11 px-4">
+              <Button variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10 h-11 px-4" suppressHydrationWarning>
                 {t("type")} <ChevronDown className="h-4 w-4 ml-1" />
               </Button>
             </DropdownMenuTrigger>
