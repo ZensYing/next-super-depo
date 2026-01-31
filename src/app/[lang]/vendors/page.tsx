@@ -1,7 +1,7 @@
-import Vendors from "@/components/pages/Vendors";
-import { getVendors } from "../super-admin-depo/depos/actions";
+"use client";
 
-export default async function Page() {
-    const vendors = await getVendors();
-    return <Vendors initialVendors={vendors} />;
+import Vendors from "@/components/pages/Vendors";
+
+export default function Page() {
+    return <Vendors />;
 }
