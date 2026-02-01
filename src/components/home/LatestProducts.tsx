@@ -1,97 +1,66 @@
-"use client";
-
-import { ChevronRight, Package, Star } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { LocalizedLink } from "@/components/LocalizedLink";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useLanguage } from "@/contexts/LanguageContext";
 
-interface LatestProductsProps {
-  products: any[];
-  dealOfTheDay?: any;
-}
+const products = [
+  {
+    id: 1,
+    name: "Diamond Necklace Premium",
+    price: 89.99,
+    originalPrice: 129.99,
+    discount: 30,
+    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=300",
+  },
+  {
+    id: 2,
+    name: "Engine Cylinder Head",
+    price: 450.00,
+    image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300",
+  },
+  {
+    id: 3,
+    name: "LED Tail Lights Set",
+    price: 85.00,
+    image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=300",
+  },
+  {
+    id: 4,
+    name: "Premium Car Seat Cover",
+    price: 120.00,
+    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=300",
+  },
+];
 
-export const LatestProducts = ({ products, dealOfTheDay }: LatestProductsProps) => {
+export const LatestProducts = () => {
   const { t } = useTranslation();
-  const { currentLanguage } = useLanguage();
-  const language = currentLanguage.code;
-
-  // Get localized name
-  const getLocalizedName = (product: any) => {
-    switch (language) {
-      case 'km': return product.productNameKh || product.productNameEn || "Untitled";
-      case 'ko': return product.productNameKo || product.productNameEn || "Untitled";
-      default: return product.productNameEn || product.productNameKh || "Untitled";
-    }
-  };
-
-  // Get price
-  const getPrice = (product: any) => {
-    const priceData = product.productPrices?.[0];
-    if (!priceData) return { formatted: "Price not set", original: 0, currency: "$" };
-    const currency = priceData.currency?.title || "$";
-    const price = parseFloat(priceData.price);
-    return {
-      formatted: `${currency}${price.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-      original: price,
-      currency
-    };
-  };
-
-  // Calculate discounted price
-  const getDiscountedPrice = (product: any) => {
-    const priceInfo = getPrice(product);
-    if (!product.discount || product.discount <= 0) return null;
-    const discountedPrice = priceInfo.original * (1 - product.discount / 100);
-    return `${priceInfo.currency}${discountedPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-  };
-
-  if (!products || products.length === 0) {
-    return null;
-  }
 
   return (
     <section className="py-6">
       <div className="flex gap-6">
         {/* Deal of the Day */}
-        {dealOfTheDay && (
-          <div className="hidden lg:block w-72 shrink-0">
-            <div className="bg-card rounded-lg border p-6 h-full">
-              <h3 className="text-primary font-bold text-center mb-6">{t("dealOfTheDay")}</h3>
-              <LocalizedLink to={`/product/${dealOfTheDay.id}`} className="block relative">
-                {dealOfTheDay.discount > 0 && (
-                  <Badge variant="destructive" className="absolute -top-2 left-0 z-10">
-                    -{Math.round(dealOfTheDay.discount)}%
-                  </Badge>
-                )}
-                <div className="aspect-square rounded-lg overflow-hidden bg-muted/30 mb-4">
-                  {dealOfTheDay.mainImage ? (
-                    <img
-                      src={dealOfTheDay.mainImage}
-                      alt={getLocalizedName(dealOfTheDay)}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Package className="h-16 w-16 text-muted-foreground/30" />
-                    </div>
-                  )}
-                </div>
-                <h4 className="font-medium text-center line-clamp-2">{getLocalizedName(dealOfTheDay)}</h4>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  {getDiscountedPrice(dealOfTheDay) ? (
-                    <>
-                      <span className="text-muted-foreground text-sm line-through">{getPrice(dealOfTheDay).formatted}</span>
-                      <span className="text-primary font-bold text-lg">{getDiscountedPrice(dealOfTheDay)}</span>
-                    </>
-                  ) : (
-                    <span className="text-primary font-bold text-lg">{getPrice(dealOfTheDay).formatted}</span>
-                  )}
-                </div>
-              </LocalizedLink>
+        <div className="hidden lg:block w-72 shrink-0">
+          <div className="bg-card rounded-lg border p-6 h-full">
+            <h3 className="text-primary font-bold text-center mb-6">{t("dealOfTheDay")}</h3>
+            <div className="relative">
+              <Badge variant="destructive" className="absolute -top-2 left-0 z-10">
+                -30%
+              </Badge>
+              <div className="aspect-square rounded-lg overflow-hidden bg-muted/30 mb-4">
+                <img
+                  src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=300"
+                  alt="Deal of the day"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            <h4 className="font-medium text-center">Diamond Necklace Premium</h4>
+            <div className="flex items-center justify-center gap-2 mt-2">
+              <span className="text-muted-foreground text-sm line-through">$129.99</span>
+              <span className="text-primary font-bold text-lg">$89.99</span>
             </div>
           </div>
-        )}
+        </div>
 
         {/* Latest Products */}
         <div className="flex-1">
@@ -103,41 +72,23 @@ export const LatestProducts = ({ products, dealOfTheDay }: LatestProductsProps) 
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {products.slice(0, 8).map((product) => (
+            {products.map((product) => (
               <LocalizedLink
                 key={product.id}
                 to={`/product/${product.id}`}
-                className="bg-card rounded-lg border p-3 hover:shadow-md transition-all group relative"
+                className="bg-card rounded-lg border p-3 hover:shadow-md transition-all group"
               >
-                {product.discount > 0 && (
-                  <Badge variant="destructive" className="absolute top-2 left-2 z-10 text-xs">
-                    -{Math.round(product.discount)}%
-                  </Badge>
-                )}
-                <div className="aspect-square mb-3 overflow-hidden rounded-lg bg-muted/30 flex items-center justify-center">
-                  {product.mainImage ? (
-                    <img
-                      src={product.mainImage}
-                      alt={getLocalizedName(product)}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <Package className="h-12 w-12 text-muted-foreground/30" />
-                  )}
+                <div className="aspect-square mb-3 overflow-hidden rounded-lg bg-muted/30">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
                 <h3 className="text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors">
-                  {getLocalizedName(product)}
+                  {product.name}
                 </h3>
-                <div className="mt-1">
-                  {getDiscountedPrice(product) ? (
-                    <div className="flex items-center gap-2">
-                      <span className="text-primary font-bold">{getDiscountedPrice(product)}</span>
-                      <span className="text-muted-foreground text-xs line-through">{getPrice(product).formatted}</span>
-                    </div>
-                  ) : (
-                    <p className="text-primary font-bold">{getPrice(product).formatted}</p>
-                  )}
-                </div>
+                <p className="text-primary font-bold mt-1">${product.price.toFixed(2)}</p>
               </LocalizedLink>
             ))}
           </div>

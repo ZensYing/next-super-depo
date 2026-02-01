@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import "tw-animate-css";
 
 /* Permanent Marker Font for Logo */
 @font-face {
@@ -151,8 +151,8 @@
   --radius-lg: var(--radius);
 
   /* Custom Colors */
-  --color-logo-red: #28a7e1;
-  --color-logo-green: #c91623;
+  --color-logo-red: #C91F23;
+  --color-logo-green: #22c55e;
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
@@ -194,7 +194,7 @@
   --popover: hsl(0 0% 100%);
   --popover-foreground: hsl(222 47% 11%);
 
-  --primary: hsl(199 77% 52%);
+  --primary: hsl(358 75% 45%);
   --primary-foreground: hsl(0 0% 100%);
 
   --secondary: hsl(210 40% 96%);
@@ -217,14 +217,14 @@
 
   --border: hsl(214 32% 91%);
   --input: hsl(214 32% 91%);
-  --ring: hsl(199 77% 52%);
+  --ring: hsl(358 75% 45%);
 
   --radius: 0.75rem;
 
   /* Custom marketplace tokens */
   --header-bg: hsl(222 47% 11%);
   --header-foreground: hsl(0 0% 100%);
-  --nav-bg: hsl(199 77% 52%);
+  --nav-bg: hsl(358 75% 45%);
   --nav-foreground: hsl(0 0% 100%);
   --badge-sale: hsl(0 84% 60%);
   --badge-new: hsl(142 76% 36%);
@@ -233,7 +233,7 @@
   --price-original: hsl(215 16% 47%);
 
   /* Gradients */
-  --gradient-hero: linear-gradient(135deg, hsl(199 77% 52%) 0%, hsl(199 77% 62%) 100%);
+  --gradient-hero: linear-gradient(135deg, hsl(358 75% 45%) 0%, hsl(358 75% 55%) 100%);
   --gradient-accent: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(15 95% 50%) 100%);
   --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
 
@@ -265,7 +265,7 @@
   --popover: hsl(222 47% 8%);
   --popover-foreground: hsl(210 40% 98%);
 
-  --primary: hsl(199 77% 52%);
+  --primary: hsl(358 75% 45%);
   --primary-foreground: hsl(0 0% 100%);
 
   --secondary: hsl(217 33% 17%);
@@ -286,7 +286,7 @@
 
   --header-bg: hsl(222 47% 8%);
   --header-foreground: hsl(0 0% 100%);
-  --nav-bg: hsl(199 77% 45%);
+  --nav-bg: hsl(358 75% 40%);
   --nav-foreground: hsl(0 0% 100%);
 
   --sidebar-background: hsl(240 5.9% 10%);

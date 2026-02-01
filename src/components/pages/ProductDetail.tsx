@@ -1,206 +1,124 @@
-"use client";
-
 import { useState } from "react";
-import { Heart, Share2, Minus, Plus, Truck, Shield, RotateCcw, BadgeCheck, MessageCircle, ChevronRight, Star, Package, Store } from "lucide-react";
+import { useParams } from "next/navigation";
+import { Heart, Share2, Minus, Plus, Truck, Shield, RotateCcw, BadgeCheck, MessageCircle, ChevronRight } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LocalizedLink } from "@/components/LocalizedLink";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useLanguage } from "@/contexts/LanguageContext";
 
-interface ProductDetailProps {
-  product: any;
-}
+// Mock product data
+const product = {
+  id: 1,
+  name: "iPhone 14 Pro Max",
+  price: 1149.00,
+  orders: 36,
+  wishListed: 0,
+  colors: [
+    { name: "Deep Purple", value: "#5E35B1", selected: true },
+    { name: "Space Black", value: "#1C1C1E", selected: false },
+  ],
+  images: [
+    "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600",
+    "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600",
+  ],
+  description: `The iPhone 14 Pro Max takes smartphone technology to the next level with its powerful A16 Bionic chip, ProMotion display, and all-new 48MP camera system. Featuring an immersive 6.7-inch Super Retina XDR display with Dynamic Island, the iPhone 14 Pro Max delivers stunning visuals, ultra-fast performance, and next-level photography, all wrapped in sleek, durable glass and stainless steel.`,
+  vendor: {
+    id: 1,
+    name: "Bicycle Shop",
+    logo: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=100",
+    reviews: 0,
+    products: 14,
+  },
+  relatedProducts: [
+    { id: 2, name: "Edelbrock Cylinder Head", price: 900.00, image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=200" },
+    { id: 3, name: "Combo Trailer Light Set", price: 35.00, image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=200" },
+  ],
+};
 
-const ProductDetail = ({ product }: ProductDetailProps) => {
+const ProductDetail = () => {
+  const { id } = useParams();
   const { t } = useTranslation();
-  const { currentLanguage } = useLanguage();
-  const language = currentLanguage.code;
-
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
-  // Get localized name
-  const getLocalizedName = () => {
-    switch (language) {
-      case 'km': return product.productNameKh || product.productNameEn || "Untitled";
-      case 'ko': return product.productNameKo || product.productNameEn || "Untitled";
-      default: return product.productNameEn || product.productNameKh || "Untitled";
-    }
-  };
-
-  // Get main price
-  const mainPrice = product.productPrices?.[0];
-  const price = mainPrice?.price ? parseFloat(mainPrice.price) : 0;
-  const currency = mainPrice?.currency?.title || "$";
-  const discount = product.discount ? parseFloat(product.discount) : 0;
-  const discountedPrice = discount > 0 ? price * (1 - discount / 100) : price;
-  const totalPrice = discountedPrice * quantity;
-
-  // All images (main + sub)
-  const allImages = [
-    product.mainImage,
-    ...(product.subImages || [])
-  ].filter(Boolean);
-
-  // Format price
-  const formatPrice = (amount: number) => {
-    return `${currency}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  };
-
-  // Get related product localized name
-  const getRelatedProductName = (p: any) => {
-    switch (language) {
-      case 'km': return p.productNameKh || p.productNameEn || "Untitled";
-      case 'ko': return p.productNameKo || p.productNameEn || "Untitled";
-      default: return p.productNameEn || p.productNameKh || "Untitled";
-    }
-  };
-
-  // Get related product price
-  const getRelatedProductPrice = (p: any) => {
-    const price = p.productPrices?.[0];
-    if (!price) return "Price not set";
-    return `${price.currency?.title || "$"}${parseFloat(price.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-  };
+  const totalPrice = product.price * quantity;
 
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Header />
       <main className="flex-1">
         <div className="container py-6">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-            <LocalizedLink to="/" className="hover:text-primary">Home</LocalizedLink>
-            <ChevronRight className="h-4 w-4" />
-            {product.category && (
-              <>
-                <LocalizedLink to={`/category/${product.categoryId}`} className="hover:text-primary">
-                  {product.category.nameKh || product.category.nameEn}
-                </LocalizedLink>
-                <ChevronRight className="h-4 w-4" />
-              </>
-            )}
-            <span className="text-foreground">{getLocalizedName()}</span>
-          </div>
-
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Main Content */}
             <div className="flex-1">
               {/* Product Card */}
-              <div className="bg-card rounded-xl border shadow-sm p-6 mb-6">
+              <div className="bg-card rounded-lg border p-6 mb-6">
                 <div className="flex flex-col md:flex-row gap-8">
                   {/* Image Gallery */}
                   <div className="md:w-1/2">
-                    <div className="relative aspect-square rounded-xl border overflow-hidden bg-white mb-4">
-                      {allImages[selectedImage] ? (
-                        <img
-                          src={allImages[selectedImage]}
-                          alt={getLocalizedName()}
-                          className="w-full h-full object-contain p-4"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-muted">
-                          <Package className="h-24 w-24 text-muted-foreground/30" />
-                        </div>
-                      )}
-
-                      {/* Discount Badge */}
-                      {discount > 0 && (
-                        <Badge variant="destructive" className="absolute top-4 left-4">
-                          -{discount}%
-                        </Badge>
-                      )}
-
-                      {/* Share button */}
-                      <button
-                        className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center hover:bg-white transition-colors shadow-md"
-                        onClick={() => navigator.share?.({ title: getLocalizedName(), url: window.location.href })}
-                      >
-                        <Share2 className="h-5 w-5 text-muted-foreground" />
+                    <div className="relative aspect-square rounded-lg border overflow-hidden bg-white mb-4">
+                      <img
+                        src={product.images[selectedImage]}
+                        alt={product.name}
+                        className="w-full h-full object-contain p-4"
+                      />
+                      {/* Action buttons */}
+                      <button className="absolute top-4 right-4 h-8 w-8 rounded-full bg-muted/80 flex items-center justify-center hover:bg-muted transition-colors">
+                        <Share2 className="h-4 w-4 text-muted-foreground" />
                       </button>
                     </div>
-
                     {/* Thumbnails */}
-                    {allImages.length > 1 && (
-                      <div className="flex gap-2 overflow-x-auto pb-2">
-                        {allImages.map((image, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setSelectedImage(index)}
-                            className={`w-16 h-16 rounded-lg border-2 overflow-hidden shrink-0 transition-all ${selectedImage === index
-                                ? "border-primary ring-2 ring-primary/30"
-                                : "border-transparent hover:border-muted-foreground/30"
-                              }`}
-                          >
-                            <img
-                              src={image}
-                              alt={`${getLocalizedName()} ${index + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                    <div className="flex gap-2">
+                      {product.images.map((image, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedImage(index)}
+                          className={`w-14 h-14 rounded-lg border-2 overflow-hidden ${selectedImage === index ? "border-primary" : "border-transparent"
+                            }`}
+                        >
+                          <img
+                            src={image}
+                            alt={`${product.name} ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Product Info */}
                   <div className="md:w-1/2">
-                    {/* Category Badge */}
-                    {product.category && (
-                      <Badge variant="secondary" className="mb-3">
-                        {product.category.nameKh || product.category.nameEn}
-                      </Badge>
-                    )}
-
-                    <h1 className="text-2xl md:text-3xl font-bold mb-3">{getLocalizedName()}</h1>
+                    <h1 className="text-2xl font-bold mb-3">{product.name}</h1>
 
                     <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                        <span>4.5</span>
-                      </div>
+                      <span className="text-primary">{product.orders} {t("orders")}</span>
                       <span className="text-muted-foreground/50">|</span>
-                      <span>{product.vendor?._count?.products || 0} {t("products")}</span>
+                      <span>{product.wishListed} {t("wishListed")}</span>
                     </div>
 
-                    {/* Price */}
-                    <div className="mb-6">
-                      {discount > 0 ? (
-                        <div className="flex items-center gap-3">
-                          <span className="text-3xl font-bold text-primary">
-                            {formatPrice(discountedPrice)}
-                          </span>
-                          <span className="text-lg text-muted-foreground line-through">
-                            {formatPrice(price)}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-3xl font-bold text-primary">
-                          {price > 0 ? formatPrice(price) : "Price not set"}
-                        </span>
-                      )}
-                    </div>
+                    <p className="text-3xl font-bold text-primary mb-6">
+                      ${product.price.toFixed(2)}
+                    </p>
 
-                    {/* Stock Status */}
+                    {/* Color Selector */}
                     <div className="mb-6">
-                      {product.unlimitedStock ? (
-                        <Badge variant="outline" className="text-green-600 border-green-600">
-                          In Stock
-                        </Badge>
-                      ) : product.stockQuantity > 0 ? (
-                        <Badge variant="outline" className="text-green-600 border-green-600">
-                          {product.stockQuantity} in stock
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-red-600 border-red-600">
-                          Out of Stock
-                        </Badge>
-                      )}
+                      <span className="text-sm font-medium text-muted-foreground mb-2 block">{t("color")}</span>
+                      <div className="flex gap-2">
+                        {product.colors.map((color, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setSelectedColor(index)}
+                            className={`h-8 w-8 rounded-full border-2 ${selectedColor === index ? "border-primary ring-2 ring-primary/30" : "border-muted"
+                              }`}
+                            style={{ backgroundColor: color.value }}
+                            title={color.name}
+                          />
+                        ))}
+                      </div>
                     </div>
 
                     {/* Quantity Selector */}
@@ -210,18 +128,18 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-11 w-11 rounded-r-none"
+                          className="h-10 w-10 rounded-r-none"
                           onClick={() => setQuantity(Math.max(1, quantity - 1))}
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
-                        <div className="h-11 w-16 flex items-center justify-center border-y text-center font-medium text-lg">
+                        <div className="h-10 w-14 flex items-center justify-center border-y text-center font-medium">
                           {quantity}
                         </div>
                         <Button
                           variant="outline"
                           size="icon"
-                          className="h-11 w-11 rounded-l-none"
+                          className="h-10 w-10 rounded-l-none"
                           onClick={() => setQuantity(quantity + 1)}
                         >
                           <Plus className="h-4 w-4" />
@@ -230,27 +148,28 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                     </div>
 
                     {/* Total Price */}
-                    <div className="mb-6 p-4 bg-muted/50 rounded-lg">
+                    <div className="mb-6">
                       <span className="text-lg">
-                        {t("totalPrice")}: <span className="text-primary font-bold text-2xl">{formatPrice(totalPrice)}</span>
+                        {t("totalPrice")}: <span className="text-primary font-bold text-xl">${totalPrice.toFixed(2)}</span>
                       </span>
                     </div>
 
                     {/* Action Buttons */}
                     <div className="flex gap-3">
-                      <Button variant="accent" className="flex-1 h-12 text-base">
+                      <Button variant="accent" className="px-8">
                         {t("buyNow")}
                       </Button>
-                      <Button className="flex-1 h-12 text-base">
+                      <Button className="px-8">
                         {t("addToCart")}
                       </Button>
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-12 w-12 shrink-0"
+                        className="shrink-0"
                         onClick={() => setIsWishlisted(!isWishlisted)}
                       >
                         <Heart className={`h-5 w-5 ${isWishlisted ? "fill-destructive text-destructive" : ""}`} />
+                        <span className="ml-1 text-sm">{isWishlisted ? 1 : 0}</span>
                       </Button>
                     </div>
                   </div>
@@ -258,7 +177,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
               </div>
 
               {/* Tabs Section */}
-              <div className="bg-card rounded-xl border shadow-sm p-6">
+              <div className="bg-card rounded-lg border p-6">
                 <Tabs defaultValue="overview" className="w-full">
                   <TabsList className="w-auto mx-auto flex justify-center mb-6">
                     <TabsTrigger value="overview" className="px-8">{t("overview")}</TabsTrigger>
@@ -266,21 +185,18 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                   </TabsList>
                   <TabsContent value="overview">
                     <div>
-                      <h3 className="font-semibold text-lg mb-4">{t("detailDescription")}</h3>
+                      <h3 className="font-semibold mb-4">{t("detailDescription")}</h3>
                       <div className="prose prose-sm max-w-none">
-                        {product.description ? (
-                          <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                            {product.description}
-                          </p>
-                        ) : (
-                          <p className="text-muted-foreground italic">No description available.</p>
-                        )}
+                        <p className="text-muted-foreground leading-relaxed">
+                          <strong>{t("productDescription")}:</strong>
+                          <br /><br />
+                          {product.description}
+                        </p>
                       </div>
                     </div>
                   </TabsContent>
                   <TabsContent value="reviews">
                     <div className="text-center py-12 text-muted-foreground">
-                      <Star className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
                       <p>{t("noReviews")}</p>
                     </div>
                   </TabsContent>
@@ -291,124 +207,86 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
             {/* Sidebar */}
             <div className="w-full lg:w-80 shrink-0 space-y-6">
               {/* Delivery Info */}
-              <div className="bg-card rounded-xl border shadow-sm p-4 space-y-4">
+              <div className="bg-card rounded-lg border p-4 space-y-4">
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Truck className="h-5 w-5 text-primary" />
-                  </div>
+                  <Truck className="h-5 w-5 text-muted-foreground" />
                   <span className="text-muted-foreground">{t("fastDelivery")}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                    <Shield className="h-5 w-5 text-green-600" />
-                  </div>
+                  <Shield className="h-5 w-5 text-muted-foreground" />
                   <span className="text-muted-foreground">{t("safePayment")}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
-                    <RotateCcw className="h-5 w-5 text-amber-600" />
-                  </div>
+                  <RotateCcw className="h-5 w-5 text-muted-foreground" />
                   <span className="text-muted-foreground">{t("returnPolicy")}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center">
-                    <BadgeCheck className="h-5 w-5 text-blue-600" />
-                  </div>
+                  <BadgeCheck className="h-5 w-5 text-muted-foreground" />
                   <span className="text-muted-foreground">{t("authenticProducts")}</span>
                 </div>
               </div>
 
               {/* Vendor Card */}
-              {product.vendor && (
-                <div className="bg-card rounded-xl border shadow-sm p-4">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="h-14 w-14 rounded-xl overflow-hidden border bg-muted flex items-center justify-center">
-                      {product.vendor.logo ? (
-                        <img
-                          src={product.vendor.logo}
-                          alt={product.vendor.vendorName}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Store className="h-6 w-6 text-muted-foreground/50" />
-                      )}
-                    </div>
-                    <div>
-                      <span className="font-semibold">{product.vendor.vendorName}</span>
-                      <p className="text-xs text-muted-foreground">Seller</p>
-                    </div>
+              <div className="bg-card rounded-lg border p-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 rounded-full overflow-hidden border">
+                    <img
+                      src={product.vendor.logo}
+                      alt={product.vendor.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
+                  <span className="font-semibold">{product.vendor.name}</span>
+                </div>
 
-                  <div className="flex gap-4 mb-4">
-                    <div className="flex-1 text-center p-3 bg-muted/50 rounded-lg">
-                      <div className="text-primary font-bold text-lg">{product.vendor._count?.products || 0}</div>
-                      <div className="text-xs text-muted-foreground">{t("products")}</div>
-                    </div>
-                    <div className="flex-1 text-center p-3 bg-muted/50 rounded-lg">
-                      <div className="text-amber-500 font-bold text-lg flex items-center justify-center gap-1">
-                        <Star className="h-4 w-4 fill-amber-400" />
-                        4.5
-                      </div>
-                      <div className="text-xs text-muted-foreground">Rating</div>
-                    </div>
+                <div className="flex gap-4 mb-4">
+                  <div className="flex-1 text-center">
+                    <div className="text-primary font-semibold">{product.vendor.reviews}</div>
+                    <div className="text-xs text-muted-foreground">{t("reviews")}</div>
                   </div>
-
-                  <div className="space-y-2">
-                    <LocalizedLink to={`/vendor/${product.vendor.id}`}>
-                      <Button variant="outline" className="w-full">
-                        Visit Store
-                      </Button>
-                    </LocalizedLink>
-                    <Button className="w-full gap-2">
-                      <MessageCircle className="h-4 w-4" />
-                      {t("chatWithVendor")}
-                    </Button>
+                  <div className="flex-1 text-center">
+                    <div className="text-accent font-semibold">{product.vendor.products}</div>
+                    <div className="text-xs text-muted-foreground">{t("products")}</div>
                   </div>
                 </div>
-              )}
+
+                <Button className="w-full gap-2">
+                  <MessageCircle className="h-4 w-4" />
+                  {t("chatWithVendor")}
+                </Button>
+              </div>
 
               {/* More From Store */}
-              {product.relatedProducts?.length > 0 && (
-                <div className="bg-card rounded-xl border shadow-sm p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold">{t("moreFromStore")}</h3>
-                    <LocalizedLink
-                      to={`/vendor/${product.vendor?.id}`}
-                      className="text-primary text-sm hover:underline flex items-center gap-1"
-                    >
-                      {t("viewAll")} <ChevronRight className="h-4 w-4" />
-                    </LocalizedLink>
-                  </div>
-
-                  <div className="space-y-3">
-                    {product.relatedProducts.map((item: any) => (
-                      <LocalizedLink
-                        key={item.id}
-                        to={`/product/${item.id}`}
-                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="w-16 h-16 rounded-lg border overflow-hidden bg-white shrink-0">
-                          {item.mainImage ? (
-                            <img
-                              src={item.mainImage}
-                              alt={getRelatedProductName(item)}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-muted">
-                              <Package className="h-6 w-6 text-muted-foreground/30" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium line-clamp-2">{getRelatedProductName(item)}</h4>
-                          <p className="text-primary font-bold mt-1">{getRelatedProductPrice(item)}</p>
-                        </div>
-                      </LocalizedLink>
-                    ))}
-                  </div>
+              <div className="bg-card rounded-lg border p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold">{t("moreFromStore")}</h3>
+                  <LocalizedLink to={`/vendor/${product.vendor.id}`} className="text-primary text-sm hover:underline flex items-center gap-1">
+                    {t("viewAll")} <ChevronRight className="h-4 w-4" />
+                  </LocalizedLink>
                 </div>
-              )}
+
+                <div className="space-y-3">
+                  {product.relatedProducts.map((item) => (
+                    <LocalizedLink
+                      key={item.id}
+                      to={`/product/${item.id}`}
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="w-16 h-16 rounded-lg border overflow-hidden bg-white shrink-0">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium line-clamp-2">{item.name}</h4>
+                        <p className="text-primary font-bold mt-1">${item.price.toFixed(2)}</p>
+                      </div>
+                    </LocalizedLink>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

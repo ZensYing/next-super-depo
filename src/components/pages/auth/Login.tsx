@@ -9,17 +9,18 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Mail, Phone, Lock, Eye, EyeOff, Store } from "lucide-react";
+import { Mail, Phone, Lock, Eye, EyeOff, User, Store } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { signIn, useSession } from "next-auth/react";
 
 const Login = () => {
     const { t } = useTranslation();
     const router = useRouter();
     const { getLocalizedPath } = useLanguage();
-    const { status } = useSession();
+    const { login, isAuthenticated, isInitialized } = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -27,38 +28,38 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (status === 'authenticated') {
+        if (isAuthenticated) {
             router.push(getLocalizedPath("/"));
         }
-    }, [status, router, getLocalizedPath]);
+    }, [isAuthenticated, router, getLocalizedPath]);
 
-    if (status === 'loading' || status === 'authenticated') return <div className="min-h-screen bg-background" />;
+    if (!isInitialized || isAuthenticated) return <div className="min-h-screen bg-background" />;
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const result = await signIn("credentials", {
-                email,
-                password,
-                redirect: false,
-            });
+            const response = await api.post('/auth/login', { email, password });
+            const token = response.data.access_token;
 
-            if (result?.error) {
-                toast("Error", {
-                    description: "Invalid credentials",
-                });
-            } else {
-                toast("Success", {
-                    description: t("signIn") + " Success",
-                });
-                router.push(getLocalizedPath('/'));
-                router.refresh();
-            }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            const decoded = JSON.parse(jsonPayload);
+            const user = { id: decoded.sub, email: decoded.email, role: decoded.role, fullName: decoded.fullName };
+
+            login(token, user);
+            toast("Success", {
+                description: t("signIn") + " Success",
+            });
+            router.push(getLocalizedPath('/'));
         } catch (error: any) {
             console.error(error);
             toast("Error", {
-                description: "Login failed unexpected",
+                description: error.response?.data?.message || "Login failed",
             });
         } finally {
             setIsLoading(false);
@@ -83,7 +84,7 @@ const Login = () => {
                         <div className="mt-4 pt-4 border-t border-slate-100">
                             <LocalizedLink to="/vendor-register" className="text-sm font-medium text-slate-600 hover:text-primary transition-colors flex items-center justify-center gap-2">
                                 <Store className="h-4 w-4" />
-                                Become a KhGlobal Vendor
+                                Become a SuperDepo Vendor
                             </LocalizedLink>
                         </div>
                     </div>

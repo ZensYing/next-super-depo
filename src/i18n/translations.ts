@@ -11,7 +11,7 @@ export const translations = {
         // Header - Navigation
         home: "Home",
         brand: "Brand",
-        allVendors: "All Vendors",
+        allVendors: "Super Depo",
         offers: "Offers",
         publicationHouse: "Publication House",
         vendorZone: "Depo Zone",
@@ -205,7 +205,7 @@ export const translations = {
         // Header - Navigation
         home: "ទំព័រដើម",
         brand: "យីហោ",
-        allVendors: "ដេប៉ូទាំងអស់",
+        allVendors: "Super Depo",
         offers: "ការផ្តល់ជូន",
         publicationHouse: "ផ្ទះបោះពុម្ព",
         vendorZone: "តំបន់ដេប៉ូ",
@@ -399,7 +399,7 @@ export const translations = {
         // Header - Navigation
         home: "首页",
         brand: "品牌",
-        allVendors: "All Vendors",
+        allVendors: "Super Depo",
         offers: "优惠",
         publicationHouse: "出版社",
         vendorZone: "Depo专区",
@@ -584,202 +584,8 @@ export const translations = {
         promoTagline: "柬埔寨最佳在线购物平台",
         promoDiscount: "立即购买 • 最高优惠50%",
     },
-
-    ko: {
-        // Header - Top Bar
-        phone: "+00xxxxxxxxxxxx",
-        currency: "USD $",
-
-        // Header - Navigation
-        home: "홈",
-        brand: "브랜드",
-        allVendors: "모든 Depo",
-        offers: "특가",
-        publicationHouse: "출판사",
-        vendorZone: "Depo 존",
-        becomeVendor: "Depo 되기",
-        vendorLogin: "Depo 로그인",
-        sellerGuidelines: "판매자 가이드",
-        flashSale: "플래시 세일",
-        featuredDeals: "추천 상품",
-        clearance: "클리어런스",
-        deal: "딜",
-        type: "유형",
-        retail: "소매",
-        wholesale: "도매",
-
-        // Header - Search & Cart
-        searchPlaceholder: "상품 검색...",
-        myCart: "장바구니",
-
-        // Categories
-        categories: "카테고리",
-        allCategories: "전체 카테고리",
-        electronics: "전자제품",
-        fashion: "패션",
-        homeGarden: "홈 & 가든",
-        sportsOutdoors: "스포츠 & 아웃도어",
-        mensFashion: "남성 패션",
-        womensFashion: "여성 패션",
-        kidsFashion: "키즈 패션",
-        healthBeauty: "건강 & 뷰티",
-        petSupplies: "반려동물 용품",
-        homeKitchen: "홈 & 주방",
-        babyToddler: "유아 & 아기",
-        sportsOutdoor: "스포츠 & 아웃도어",
-        phoneGadgets: "폰 & 가젯",
-        electronicsGadgets: "전자제품 & 가젯",
-
-        // Product
-        addToCart: "장바구니에 담기",
-        buyNow: "바로 구매",
-        outOfStock: "품절",
-        inStock: "재고 있음",
-        quantity: "수량",
-        price: "가격",
-        description: "설명",
-        reviews: "리뷰",
-        specifications: "사양",
-        color: "색상",
-        totalPrice: "총 가격",
-        orders: "주문",
-        wishListed: "위시리스트",
-        overview: "개요",
-        detailDescription: "상세 설명",
-        productDescription: "상품 설명",
-        noReviews: "아직 리뷰가 없습니다. 첫 번째 리뷰를 작성해 주세요!",
-
-        // Product Detail - Delivery
-        fastDelivery: "전국 빠른 배송",
-        safePayment: "안전 결제",
-        returnPolicy: "7일 반품 정책",
-        authenticProducts: "100% 정품",
-        chatWithVendor: "상품 문의",
-        moreFromStore: "스토어의 다른 상품",
-        products: "상품",
-
-        // Footer
-        aboutUs: "회사 소개",
-        contactUs: "문의하기",
-        privacyPolicy: "개인정보 처리방침",
-        termsConditions: "이용약관",
-        help: "도움말",
-        faq: "자주 묻는 질문",
-        shipping: "배송",
-        returns: "반품",
-        quickLinks: "바로가기",
-        myAccount: "내 계정",
-        myProfile: "내 프로필",
-        orderHistory: "주문 내역",
-        wishlist: "위시리스트",
-        trackOrder: "주문 추적",
-        contactInfo: "연락처",
-        subscribeNewsletter: "뉴스레터 구독",
-        newsletterDesc: "신상품 및 특가 정보를 받아보세요!",
-        enterEmail: "이메일 입력",
-        subscribe: "구독",
-        allRightsReserved: "모든 권리 보유",
-        footerDescription: "모든 쇼핑 니즈를 위한 원스톱 쇼핑몰. 신뢰할 수 있는 판매자의 품질 상품.",
-
-        // Common
-        seeAll: "전체 보기",
-        viewMore: "더 보기",
-        loading: "로딩 중...",
-        error: "오류",
-        noResults: "결과 없음",
-
-        // Hero/Banner
-        shopNow: "지금 쇼핑",
-        discoverDeals: "놀라운 특가 발견",
-
-        // Depo
-        vendors: "Depo",
-        vendorProducts: "Depo 상품",
-
-        // Auth
-        login: "로그인",
-        register: "회원가입",
-        logout: "로그아웃",
-        email: "이메일",
-        password: "비밀번호",
-        phoneNumber: "전화번호",
-        continueWithGoogle: "Google로 계속",
-        forgotPassword: "비밀번호를 잊으셨나요?",
-        dontHaveAccount: "계정이 없으신가요?",
-        alreadyHaveAccount: "이미 계정이 있으신가요?",
-        signIn: "로그인",
-        signUp: "회원가입",
-        or: "또는",
-
-        // Page titles
-        brandsPage: "브랜드",
-        dealsPage: "특가 & 할인",
-        vendorsPage: "모든 Depo",
-        productDetails: "상품 상세",
-        pageNotFound: "페이지를 찾을 수 없습니다",
-
-        // Flash Deal
-        flashDeal: "플래시 딜",
-        flashDealDesc: "서두르세요! 한정 수량입니다",
-        viewAll: "전체 보기",
-        days: "일",
-        hours: "시간",
-        minutes: "분",
-        seconds: "초",
-
-        // Featured Products
-        featuredProducts: "추천 상품",
-        topRated: "최고 평점",
-        bestSelling: "베스트셀러",
-        newArrivals: "신상품",
-        topSellers: "인기 Depo",
-        latestProducts: "최신 상품",
-        dealOfTheDay: "오늘의 특가",
-
-        // Depos Page
-        allStores: "모든 Depo",
-        findStoresDesc: "원하는 Depo를 찾고 좋아하는 상품을 구매하세요",
-        filterBy: "필터",
-        searchStore: "스토어 검색",
-        sortBy: "정렬",
-        default: "기본",
-        highestRating: "평점 높은 순",
-        mostProducts: "상품 많은 순",
-        nameAZ: "이름 순",
-        rating: "평점",
-        closedNow: "영업 종료",
-
-        // Brands Page
-        allBrands: "모든 브랜드",
-        exploreBrands: "좋아하는 브랜드의 상품을 탐색하세요",
-
-        // Deals Page
-        discountedProducts: "🔥 할인 상품",
-        grabDeals: "놓치기 전에 이 놀라운 특가를 잡으세요!",
-        endsIn: "종료까지",
-        showingProducts: "표시 중",
-        filter: "필터",
-        sold: "판매",
-        available: "재고",
-
-        // Vendor Detail
-        joined: "가입",
-        follow: "팔로우",
-        share: "공유",
-        searchInStore: "스토어 내 검색",
-        allProducts: "전체 상품",
-
-        // Promo Banner
-        bestPlatform: "최고의 플랫폼",
-        bestDepo: "최고의 Depo",
-        bestPrice: "최고의 가격",
-        bestTeam: "최고의 팀",
-        bestDelivery: "최고의 배송",
-        promoTagline: "캄보디아 최고의 온라인 쇼핑 플랫폼",
-        promoDiscount: "지금 쇼핑 • 최대 50% 할인",
-    },
 } as const;
 
 export const getTranslation = (lang: LanguageCode, key: TranslationKey): string => {
-    return translations[lang]?.[key] || translations.en[key] || key;
+    return translations[lang][key] || translations.en[key] || key;
 };

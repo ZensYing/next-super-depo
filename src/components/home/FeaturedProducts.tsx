@@ -1,40 +1,48 @@
-"use client";
-
-import { ChevronRight, Package } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { LocalizedLink } from "@/components/LocalizedLink";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useLanguage } from "@/contexts/LanguageContext";
 
-interface FeaturedProductsProps {
-  products: any[];
-}
+const products = [
+  {
+    id: 1,
+    name: "Honor X14 Plus Laptop",
+    price: 2200.00,
+    image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300",
+  },
+  {
+    id: 2,
+    name: "Quercetinol Cleansing...",
+    price: 10.00,
+    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=300",
+  },
+  {
+    id: 3,
+    name: "Moisturizing Cream",
+    price: 15.00,
+    image: "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?w=300",
+  },
+  {
+    id: 4,
+    name: "Beauty Facial Cleanser",
+    price: 12.00,
+    image: "https://images.unsplash.com/photo-1556228841-a3c527ebefe5?w=300",
+  },
+  {
+    id: 5,
+    name: "Moisturizing Cream",
+    price: 14.00,
+    image: "https://images.unsplash.com/photo-1570194065650-d99fb4a38b4a?w=300",
+  },
+  {
+    id: 6,
+    name: "Tote Bag High Quality",
+    price: 20.00,
+    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=300",
+  },
+];
 
-export const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
+export const FeaturedProducts = () => {
   const { t } = useTranslation();
-  const { currentLanguage } = useLanguage();
-  const language = currentLanguage.code;
-
-  // Get localized name
-  const getLocalizedName = (product: any) => {
-    switch (language) {
-      case 'km': return product.productNameKh || product.productNameEn || "Untitled";
-      case 'ko': return product.productNameKo || product.productNameEn || "Untitled";
-      default: return product.productNameEn || product.productNameKh || "Untitled";
-    }
-  };
-
-  // Get price
-  const getPrice = (product: any) => {
-    const priceData = product.productPrices?.[0];
-    if (!priceData) return "Price not set";
-    const currency = priceData.currency?.title || "$";
-    const price = parseFloat(priceData.price);
-    return `${currency}${price.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-  };
-
-  if (!products || products.length === 0) {
-    return null;
-  }
 
   return (
     <section className="py-6">
@@ -52,21 +60,17 @@ export const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
             to={`/product/${product.id}`}
             className="bg-card rounded-lg border p-3 hover:shadow-md transition-all group"
           >
-            <div className="aspect-square mb-3 overflow-hidden rounded-lg bg-muted/30 flex items-center justify-center">
-              {product.mainImage ? (
-                <img
-                  src={product.mainImage}
-                  alt={getLocalizedName(product)}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              ) : (
-                <Package className="h-12 w-12 text-muted-foreground/30" />
-              )}
+            <div className="aspect-square mb-3 overflow-hidden rounded-lg bg-muted/30">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
             </div>
             <h3 className="text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors">
-              {getLocalizedName(product)}
+              {product.name}
             </h3>
-            <p className="text-primary font-bold mt-1">{getPrice(product)}</p>
+            <p className="text-primary font-bold mt-1">${product.price.toFixed(2)}</p>
           </LocalizedLink>
         ))}
       </div>
